@@ -1,7 +1,7 @@
 import axios from "axios";
 import SearchBar from "./SearchBar";
 import { useEffect, useState } from "react";
-import { Stack } from "react-bootstrap";
+import { Button, Spinner, Stack } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import MovieCard from "./MovieCard";
 import AddToWishList from "./AddToWishList";
@@ -13,11 +13,20 @@ const API_URL =
 const MovieWishListContainer = () => {
   const [searchedMovie, setSearchedMovie] = useState({});
   const [wishList, setWishList] = useState([]);
+  const [isLoading, setIsLoading] = useState();
   //Function to search the movie
   const searchMovie = async (movieTitle) => {
-    const response = await axios.get(API_URL + movieTitle);
-    setSearchedMovie(response.data);
-    console.log(response.data);
+    try {
+      setIsLoading(true);
+      const response = await axios.get(API_URL + movieTitle);
+      if (response.data) {
+        setIsLoading(false);
+      }
+      setSearchedMovie(response.data);
+    } catch (error) {
+      setIsLoading(false);
+      alert(error.message);
+    }
   };
   // Function to add movies to wishlist
   const addMovieToWishList = (movie) => {
@@ -27,12 +36,12 @@ const MovieWishListContainer = () => {
   // useEffect(()=>, {})
   // []Dependancy Array
   useEffect(() => {
-    searchMovie("Thor");
+    searchMovie();
   }, []);
 
   // Discard Search Item
   const handleOnDiscard = () => {
-    searchMovie("Thor");
+    searchMovie();
   };
 
   //Function for Deleting Card
@@ -45,15 +54,30 @@ const MovieWishListContainer = () => {
       {/* Search Bar */}
       <SearchBar searchMovie={searchMovie} />
       {/* Search Result */}
-      <Stack direction="horizontal" gap={4} className="my-4">
-        <MovieCard movie={searchedMovie} />
-        <AddToWishList
-          movie={searchedMovie}
-          addMovieToWishList={addMovieToWishList}
-          wishList={wishList}
-          handleOnDiscard={handleOnDiscard}
-        />
-      </Stack>
+
+      {isLoading && (
+        <Button variant="primary" disabled>
+          <Spinner
+            as="span"
+            animation="grow"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+          Loading...
+        </Button>
+      )}
+      {!isLoading && (
+        <Stack direction="horizontal" gap={4} className="my-4">
+          <MovieCard movie={searchedMovie} />
+          <AddToWishList
+            movie={searchedMovie}
+            addMovieToWishList={addMovieToWishList}
+            wishList={wishList}
+            handleOnDiscard={handleOnDiscard}
+          />
+        </Stack>
+      )}
       {/* Add to WishList section */}
       {/* Wishlist Section */}
 
