@@ -6,6 +6,7 @@ const DisplayWishList = (props) => {
   const filteredWishList = Genre
     ? wishList.filter((movie) => movie.Genre === Genre)
     : wishList;
+  console.log(filteredWishList);
   return (
     <Row className="d-flex flex-wrap">
       {filteredWishList.map((movie) => (

@@ -7,6 +7,12 @@ const SearchBar = (props) => {
     searchMovie(searchInputRef.current.value);
     searchInputRef.current.value = "";
   };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleOnclick(searchInputRef);
+    }
+  };
   return (
     <Stack direction="horizontal" gap={4}>
       <Form.Control
@@ -14,6 +20,7 @@ const SearchBar = (props) => {
         type="text"
         placeholder="Enter Movie Title"
         ref={searchInputRef}
+        onKeyPress={handleKeyPress}
       />
       <Button
         variant="outline-primary"

@@ -38,16 +38,17 @@ const MovieWishListContainer = () => {
   // useEffect(()=>, [])
   // []Dependancy Array
   useEffect(() => {
-    searchMovie();
+    searchMovie("Real Steel");
   }, []);
   // Local storage
   useEffect(() => {
     localStorage.setItem("wishList", JSON.stringify(wishList));
   }, [wishList]);
+  console.log(wishList);
 
   // Discard Search Item
   const handleOnDiscard = () => {
-    searchMovie();
+    searchMovie("Real Steel");
   };
 
   //Function for Deleting Card
@@ -57,6 +58,9 @@ const MovieWishListContainer = () => {
   };
   return (
     <>
+      <h1>
+        <center>Movie WishList</center>
+      </h1>
       {/* Search Bar */}
       <SearchBar searchMovie={searchMovie} />
       {/* Search Result */}
