@@ -12,8 +12,10 @@ const API_URL =
   "http://www.omdbapi.com/?i=tt3896198&apikey=e68479dc&type=movie&t=";
 const MovieWishListContainer = () => {
   const [searchedMovie, setSearchedMovie] = useState({});
-  const [wishList, setWishList] = useState([]);
+  const storedMovieList = JSON.parse(localStorage.getItem("wishList")) || [];
+  const [wishList, setWishList] = useState(storedMovieList);
   const [isLoading, setIsLoading] = useState();
+
   //Function to search the movie
   const searchMovie = async (movieTitle) => {
     try {
@@ -33,11 +35,15 @@ const MovieWishListContainer = () => {
     setWishList([...wishList, movie]);
   };
   // UseEffect hook - Gives control over the life cycle of component
-  // useEffect(()=>, {})
+  // useEffect(()=>, [])
   // []Dependancy Array
   useEffect(() => {
     searchMovie();
   }, []);
+  // Local storage
+  useEffect(() => {
+    localStorage.setItem("wishList", JSON.stringify(wishList));
+  }, [wishList]);
 
   // Discard Search Item
   const handleOnDiscard = () => {
