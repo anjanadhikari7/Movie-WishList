@@ -1,116 +1,152 @@
 import axios from "axios";
 import SearchBar from "./SearchBar";
 import { useEffect, useState } from "react";
-import { Button, Spinner, Stack } from "react-bootstrap";
-import Card from "react-bootstrap/Card";
+import {
+  Button,
+  Spinner,
+  Container,
+  Row,
+  Col,
+  Card,
+  Tabs,
+  Tab,
+} from "react-bootstrap";
 import MovieCard from "./MovieCard";
 import AddToWishList from "./AddToWishList";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
 import DisplayWishList from "./DisplayWishList";
-const API_URL =
-  "http://www.omdbapi.com/?i=tt3896198&apikey=e68479dc&type=movie&t=";
+
+const API_URL = "http://www.omdbapi.com/?apikey=e68479dc&type=movie&t=";
+const SEARCH_URL = "http://www.omdbapi.com/?apikey=e68479dc&type=movie&s=";
+
 const MovieWishListContainer = () => {
   const [searchedMovie, setSearchedMovie] = useState({});
+  const [similarMovies, setSimilarMovies] = useState([]);
+  const [currentMovieIndex, setCurrentMovieIndex] = useState(0);
   const storedMovieList = JSON.parse(localStorage.getItem("wishList")) || [];
   const [wishList, setWishList] = useState(storedMovieList);
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
-  //Function to search the movie
   const searchMovie = async (movieTitle) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await axios.get(API_URL + movieTitle);
       if (response.data) {
+        setSearchedMovie(response.data);
         setIsLoading(false);
+        // Fetch similar movies
+        const searchResponse = await axios.get(SEARCH_URL + movieTitle);
+        if (searchResponse.data && searchResponse.data.Search) {
+          setSimilarMovies(searchResponse.data.Search);
+        }
       }
-      setSearchedMovie(response.data);
     } catch (error) {
-      setIsLoading(false);
       alert(error.message);
+      setIsLoading(false);
     }
   };
-  // Function to add movies to wishlist
+
   const addMovieToWishList = (movie) => {
     setWishList([...wishList, movie]);
   };
-  // UseEffect hook - Gives control over the life cycle of component
-  // useEffect(()=>, [])
-  // []Dependancy Array
+
   useEffect(() => {
     searchMovie("Real Steel");
   }, []);
-  // Local storage
+
   useEffect(() => {
     localStorage.setItem("wishList", JSON.stringify(wishList));
   }, [wishList]);
-  console.log(wishList);
 
-  // Discard Search Item
   const handleOnDiscard = () => {
     searchMovie("Real Steel");
   };
 
-  //Function for Deleting Card
-  const handleOnRemove = (ID) => {
-    const updatedWishList = wishList.filter((movie) => movie.imdbID !== ID);
-    setWishList(updatedWishList);
+  const handleNextMovie = () => {
+    const nextIndex = (currentMovieIndex + 1) % similarMovies.length;
+    setCurrentMovieIndex(nextIndex);
+    searchMovie(similarMovies[nextIndex].Title);
   };
+
+  const handleOnRemove = (ID) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this movie from your wishlist?"
+    );
+    if (confirmDelete) {
+      const updatedWishList = wishList.filter((movie) => movie.imdbID !== ID);
+      setWishList(updatedWishList);
+    }
+  };
+
   return (
-    <>
-      <h1>
-        <center>Movie WishList</center>
-      </h1>
-      {/* Search Bar */}
-      <SearchBar searchMovie={searchMovie} />
-      {/* Search Result */}
+    <Container fluid className="p-4 subtle-container">
+      <Row className="mb-4">
+        <Col>
+          <h1 className="text-center text-dark mb-4">Movie WishList</h1>
+          <SearchBar searchMovie={searchMovie} />
+        </Col>
+      </Row>
 
-      {isLoading && (
-        <Button variant="primary" disabled>
-          <Spinner
-            as="span"
-            animation="grow"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          Loading...
-        </Button>
-      )}
-      {!isLoading && (
-        <Stack direction="horizontal" gap={4} className="my-4">
-          <MovieCard movie={searchedMovie} />
-          <AddToWishList
-            movie={searchedMovie}
-            addMovieToWishList={addMovieToWishList}
-            wishList={wishList}
-            handleOnDiscard={handleOnDiscard}
-          />
-        </Stack>
-      )}
-      {/* Add to WishList section */}
-      {/* Wishlist Section */}
+      <Row className="my-4">
+        <Col>
+          {isLoading && (
+            <Button variant="warning" disabled>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+              Loading...
+            </Button>
+          )}
+          {!isLoading && (
+            <Card className="shadow-sm mb-4 bg-light">
+              <Card.Body>
+                <Row>
+                  <Col md={4}>
+                    <MovieCard movie={searchedMovie} />
+                  </Col>
+                  <Col
+                    md={8}
+                    className="d-flex flex-column justify-content-between"
+                  >
+                    <AddToWishList
+                      movie={searchedMovie}
+                      addMovieToWishList={addMovieToWishList}
+                      wishList={wishList}
+                      handleOnDiscard={handleOnDiscard}
+                    />
+                    <Button
+                      variant="info"
+                      className="mt-3"
+                      onClick={handleNextMovie}
+                    >
+                      Next Similar Movie
+                    </Button>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          )}
+        </Col>
+      </Row>
 
-      <hr />
-
-      <Tabs className="mb-3">
-        <Tab eventKey="All" title="All">
-          All Movies
+      <Tabs defaultActiveKey="all" id="wishlist-tabs" className="mb-3">
+        <Tab eventKey="all" title="All Movies" className="p-3 subtle-tab">
           <DisplayWishList
             wishList={wishList}
             handleOnRemove={handleOnRemove}
           />
         </Tab>
-        <Tab eventKey="action" title="Action">
-          Action Movies
+        <Tab eventKey="action" title="Action Movies" className="p-3 subtle-tab">
           <DisplayWishList
             wishList={wishList}
             Genre="Action"
             handleOnRemove={handleOnRemove}
           />
         </Tab>
-        <Tab eventKey="comedy" title="Comedy">
-          Comedy Movies
+        <Tab eventKey="comedy" title="Comedy Movies" className="p-3 subtle-tab">
           <DisplayWishList
             wishList={wishList}
             Genre="Comedy"
@@ -118,7 +154,7 @@ const MovieWishListContainer = () => {
           />
         </Tab>
       </Tabs>
-    </>
+    </Container>
   );
 };
 
