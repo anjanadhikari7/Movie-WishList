@@ -25,19 +25,33 @@ const MovieWishListContainer = () => {
   const storedMovieList = JSON.parse(localStorage.getItem("wishList")) || [];
   const [wishList, setWishList] = useState(storedMovieList);
   const [isLoading, setIsLoading] = useState(false);
+  // isNext state defines whether the displayed movie is a new search or from similar movie list
+  const [isNext, setIsNext] = useState();
 
+  // Function to search for a movie by title
   const searchMovie = async (movieTitle) => {
+    setIsNext(false); // Indicating its a new search
     setIsLoading(true);
     try {
       const response = await axios.get(API_URL + movieTitle);
       if (response.data) {
         setSearchedMovie(response.data);
-        setIsLoading(false);
-        // Fetch similar movies
-        const searchResponse = await axios.get(SEARCH_URL + movieTitle);
-        if (searchResponse.data && searchResponse.data.Search) {
-          setSimilarMovies(searchResponse.data.Search);
+
+        // Get an array of similar movies when a movie is searched.
+        if (!isNext) {
+          const searchResponse = await axios.get(SEARCH_URL + movieTitle);
+          if (searchResponse.data && searchResponse.data.Search) {
+            console.log(searchResponse.data.Search);
+            setSimilarMovies(searchResponse.data.Search);
+            // Index reset for new search
+            setCurrentMovieIndex(0);
+          } else {
+            // Reset similarMovies if no results
+            setSimilarMovies([]);
+          }
         }
+
+        setIsLoading(false);
       }
     } catch (error) {
       alert(error.message);
@@ -45,28 +59,38 @@ const MovieWishListContainer = () => {
     }
   };
 
+  // Add a movie to the wishlist
   const addMovieToWishList = (movie) => {
     setWishList([...wishList, movie]);
   };
 
+  // Initial search  when page starts
   useEffect(() => {
-    searchMovie("Real Steel");
+    searchMovie("X-Men");
   }, []);
 
+  // Effect to update localStorage whenever the wishlist changes
   useEffect(() => {
     localStorage.setItem("wishList", JSON.stringify(wishList));
   }, [wishList]);
 
+  // Discard movie
   const handleOnDiscard = () => {
-    searchMovie("Real Steel");
+    searchMovie("X-Men");
   };
 
+  // Next movie
   const handleNextMovie = () => {
-    const nextIndex = (currentMovieIndex + 1) % similarMovies.length;
-    setCurrentMovieIndex(nextIndex);
-    searchMovie(similarMovies[nextIndex].Title);
+    if (similarMovies.length > 0) {
+      const nextIndex = (currentMovieIndex + 1) % similarMovies.length;
+      setCurrentMovieIndex(nextIndex);
+      searchMovie(similarMovies[nextIndex].Title);
+      //Indicating that it isn't new search but user is viewing similar movies.
+      setIsNext(true);
+    }
   };
 
+  // Deleting movie from wishList
   const handleOnRemove = (ID) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this movie from your wishlist?"

@@ -6,7 +6,7 @@ const DisplayWishList = (props) => {
   const filteredWishList = Genre
     ? wishList.filter((movie) => movie.Genre === Genre)
     : wishList;
-  console.log(filteredWishList);
+
   return (
     <Row className="d-flex flex-wrap">
       {filteredWishList.map((movie) => (
@@ -28,7 +28,7 @@ const DisplayWishList = (props) => {
                 onClick={() => handleOnRemove(movie.imdbID)}
                 title="Delete"
               >
-                <i class="fa-trash fa-solid "></i>
+                <i className="fa-trash fa-solid "></i>
               </button>
             </Card.Body>
           </Card>
