@@ -15,8 +15,8 @@ import MovieCard from "./MovieCard";
 import AddToWishList from "./AddToWishList";
 import DisplayWishList from "./DisplayWishList";
 
-const API_URL = "http://www.omdbapi.com/?apikey=e68479dc&type=movie&t=";
-const SEARCH_URL = "http://www.omdbapi.com/?apikey=e68479dc&type=movie&s=";
+const API_URL = "https://www.omdbapi.com/?apikey=e68479dc&type=movie&t=";
+const SEARCH_URL = "https://www.omdbapi.com/?apikey=e68479dc&type=movie&s=";
 
 const MovieWishListContainer = () => {
   const [searchedMovie, setSearchedMovie] = useState({});
@@ -77,6 +77,7 @@ const MovieWishListContainer = () => {
   // Discard movie
   const handleOnDiscard = () => {
     searchMovie("X-Men");
+    setIsNext(true);
   };
 
   // Next movie
