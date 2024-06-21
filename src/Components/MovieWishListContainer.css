@@ -1,0 +1,119 @@
+.gradient-background {
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: #fff;
+}
+
+.movie-card {
+  background-color: #333;
+  color: #fff;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.movie-section {
+  background-color: #333;
+  color: #fff;
+}
+/* MovieWishListContainer.css */
+/* MovieWishListContainer.css */
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to right, #2c3e50, #4ca1af);
+}
+
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.main-content {
+  padding-top: 100px; /* Adjust based on the height of your header */
+}
+
+.movie-list {
+  padding: 20px;
+}
+
+.wishlist {
+  padding-left: 20px;
+  overflow-y: auto;
+  max-height: calc(
+    100vh - 100px
+  ); /* Adjust based on the height of your header */
+}
+
+.movie-card-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.movie-poster {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.movie-card-content {
+  padding: 20px;
+  color: white;
+}
+
+.movie-buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.card-body {
+  color: white;
+}
+
+.text-light {
+  color: #ffffff !important;
+}
+
+.nav-tabs .nav-link {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-color: rgba(0, 0, 0, 0.7);
+}
+
+.nav-tabs .nav-link.active {
+  color: #ffffff;
+  background-color: #4ca1af;
+  border-color: #4ca1af;
+}
+
+.tab-content {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 20px;
+  color: white;
+}

@@ -2,7 +2,10 @@ body {
   background-color: #e6e6e6;
   font-family: "Arial", sans-serif;
 }
-
+.root {
+  padding: 0px;
+  margin: 0px;
+}
 .subtle-container {
   background: linear-gradient(to right, #8e9eab, #eef2f3);
   border-radius: 10px;
@@ -77,4 +80,40 @@ h1 {
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+/* MovieWishListContainer.css */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to right, #2c3e50, #4ca1af);
+}
+
+.header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px;
+}
+
+.header h1 {
+  margin: 0;
+}
+
+.main-content {
+  padding-top: 9rem; /* Adjust based on the height of your header */
+}
+
+.movie-list {
+  border-right: 1px solid #ccc;
+  padding-right: 20px;
+}
+
+.wishlist {
+  padding-left: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
 }
